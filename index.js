@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 
-persons =
+let persons =
      [
     {
       "name": "Arto Hellas",
@@ -25,3 +25,15 @@ persons =
     }
   ]
 
+app.get('/api/persons',(request,response) =>{
+    console.log("called from api/persons")
+    response.json(persons)
+}
+)
+app.get('/',(request,response)=>{
+    response.send('<h1>hello world </h1>')
+})
+const PORT = 3001
+app.listen(PORT,()=>{
+    console.log(`listening from port ${PORT}`)
+})

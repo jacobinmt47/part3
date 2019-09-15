@@ -4,7 +4,9 @@
   "description": "exercises 3 ",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch":"nodemon  index.js",
+    "start":"node index.js"
   },
   "repository": {
     "type": "git",
@@ -17,5 +19,8 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.2"
   }
 }
