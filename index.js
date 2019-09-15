@@ -30,6 +30,16 @@ app.get('/api/persons',(request,response) =>{
     response.json(persons)
 }
 )
+
+app.get('/info',(request,response) =>{
+    const l = persons.length
+    const d = new Date()
+    const msg =`<h3>Phone book has info for ${l} people </br>${d}`
+    console.log(msg)
+    response.send(msg)
+    
+}
+)
 app.get('/',(request,response)=>{
     response.send('<h1>hello world </h1>')
 })
