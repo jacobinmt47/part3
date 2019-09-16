@@ -63,7 +63,7 @@ app.delete('/api/persons/:id',(request,response) =>{
 
 app.post('/api/persons/',(request,response) =>{
   const body = request.query
-  console.log(body.name)
+  
   const person ={
     name:body.name,
     phoneNumber:body.phoneNumber,
