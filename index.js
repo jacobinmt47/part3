@@ -48,8 +48,8 @@ app.get('/info',(request,response) =>{
     const msg =`<h3>Phone book has info for ${l} people </br>${d}`
     console.log(msg)
     response.send(msg)
-}
-)
+})
+
 app.get('/',(request,response)=>{
     response.send('<h1>hello world </h1>')
 })
@@ -60,6 +60,7 @@ app.delete('/api/persons/:id',(request,response) =>{
   persons = persons.filter(n =>n.id !== id)
   response.status(204).end()
 })
+
 const PORT = 3001
 app.listen(PORT,()=>{
     console.log(`listening from port ${PORT}`)
