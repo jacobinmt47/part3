@@ -63,15 +63,20 @@ app.delete('/api/persons/:id',(request,response) =>{
 
 app.post('/api/persons/',(request,response) =>{
   const body = request.query
-  
+   if(!body.name){
+    console.log("name is missing from query")
+    return response.status(400).json({error:'name is missing '})
+  }
+  if(!body.phoneNumber){
+    console.log("phonenumber is missing from query")
+    return response.status(400).json({error:'phonenumber is missing'})
+  }
   const person ={
     name:body.name,
     phoneNumber:body.phoneNumber,
     id:Math.round( Math.random()*1000)
   } 
-  if(!body){
-    return response.status(400).json({error:'query is missing '})
-  }
+ 
   persons = persons.concat(person)
   response.json(person)
 })
