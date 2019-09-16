@@ -34,7 +34,10 @@ app.get('/api/persons/:id',(request,response) =>{
     console.log("called from api/persons/:id")
     const id = request.params.id
     const p = persons.filter(n => n.id === Number(id))
-    console.log(p)
+    if(!p){
+      console.log("person undefined")
+      response.status(404).end()
+    }
     response.json(p)
 }
 )
@@ -45,11 +48,17 @@ app.get('/info',(request,response) =>{
     const msg =`<h3>Phone book has info for ${l} people </br>${d}`
     console.log(msg)
     response.send(msg)
-    
 }
 )
 app.get('/',(request,response)=>{
     response.send('<h1>hello world </h1>')
+})
+
+app.delete('/api/persons/:id',(request,response) =>{
+  const id = Number(request.params.id)
+  console.log("delete person with id = "+id)
+  persons = persons.filter(n =>n.id !== id)
+  response.status(204).end()
 })
 const PORT = 3001
 app.listen(PORT,()=>{
