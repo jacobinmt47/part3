@@ -30,6 +30,14 @@ app.get('/api/persons',(request,response) =>{
     response.json(persons)
 }
 )
+app.get('/api/persons/:id',(request,response) =>{
+    console.log("called from api/persons/:id")
+    const id = request.params.id
+    const p = persons.filter(n => n.id === Number(id))
+    console.log(p)
+    response.json(p)
+}
+)
 
 app.get('/info',(request,response) =>{
     const l = persons.length
