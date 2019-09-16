@@ -74,7 +74,7 @@ app.post('/api/persons/',(request,response) =>{
   const notp = persons.find(x =>x.name ===body.name)
   if(notp){
     console.log('name alreay exists '+body.name)
-    return response.status(204).json({error:'name alreay exists '+body.name})
+    return response.status(400).json({error:'name alreay exists '+body.name})
   }
   const person ={
     name:body.name,
