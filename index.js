@@ -71,10 +71,15 @@ app.post('/api/persons/',(request,response) =>{
     console.log("phonenumber is missing from query")
     return response.status(400).json({error:'phonenumber is missing'})
   }
+  const notp = persons.find(x =>x.name ===body.name)
+  if(notp){
+    console.log('name alreay exists '+body.name)
+    return response.status(204).json({error:'name alreay exists '+body.name})
+  }
   const person ={
     name:body.name,
     phoneNumber:body.phoneNumber,
-    id:Math.round( Math.random()*1000)
+    id:Math.round( Math.random()*1000000)
   } 
  
   persons = persons.concat(person)
