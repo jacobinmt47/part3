@@ -61,9 +61,9 @@ app.get('/info',(request,response) =>{
     response.send(msg)
 })
 
-app.get('/',(request,response)=>{
-    response.send('<h1>hello world </h1>')
-})
+//app.get('/',(request,response)=>{
+//    response.send('<h1>hello world </h1>')
+//})
 
 app.delete('/api/persons/:id',(request,response) =>{
   const id = Number(request.params.id)
