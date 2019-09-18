@@ -1,7 +1,9 @@
 const express = require('express')
 const morgan = require('morgan')
+const bodyParser = require('body-parser')
 const app = express()
 let body ={}  //kept in global scope for logging purposes
+app.use(bodyParser)
 app.use(morgan(':method :url :status :res[content-length] :response-time ms :mytoken'))
 morgan.token('mytoken',(req,res)=>{
   return JSON.stringify(body)
@@ -68,7 +70,7 @@ app.delete('/api/persons/:id',(request,response) =>{
 })
 
 app.post('/api/persons/',(request,response) =>{
-   body = request.query
+   body = request.body
    if(!body.name){
     console.log("name is missing from query")
     return response.status(400).json({error:'name is missing '})
@@ -92,6 +94,7 @@ app.post('/api/persons/',(request,response) =>{
   response.json(person)
 })
 
-const PORT = 3001
-
-app.listen(PORT,()=>{})
+const PORT = process.env.PORT || 3001
+app.listen(PORT,()=>{
+  console.log(`listening on port : ${PORT}`)
+})
