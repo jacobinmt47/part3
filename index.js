@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
 let body ={}  //kept in global scope for logging purposes
+app.use(express.static('build'))
 app.use(bodyParser.json())
 app.use(cors())
 app.use(morgan(':method :url :status :res[content-length] :response-time ms :mytoken'))
