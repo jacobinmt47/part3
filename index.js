@@ -1,9 +1,11 @@
 const express = require('express')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const app = express()
 let body ={}  //kept in global scope for logging purposes
-app.use(bodyParser)
+app.use(bodyParser.json())
+app.use(cors())
 app.use(morgan(':method :url :status :res[content-length] :response-time ms :mytoken'))
 morgan.token('mytoken',(req,res)=>{
   return JSON.stringify(body)
