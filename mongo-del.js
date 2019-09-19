@@ -1,12 +1,12 @@
 const mongoose = require('mongoose')
-if(process.argv.length<5){
+if(process.argv.length<4){
     console.log('not enough arugments ')
-    console.log('example   node mongo.js password name 999-999-9999')
+    console.log('example   node mongo.js password 1')
     process.exit(1)
 }
 const password = process.argv[2]
-const name = process.argv[3]
-const phonenumber =process.argv[4]
+const id = process.argv[3]
+
 
 const url =`mongodb+srv://jacobinmt47:${password}@cluster0-cekgn.mongodb.net/test?retryWrites=true&w=majority`
 console.log(url)
@@ -18,14 +18,8 @@ const phoneSchema = new mongoose.Schema({
   })
   
   const Record = mongoose.model('record', phoneSchema)
-  
-  const rec = new Record({
-    id:1,
-    name:name,
-    phonenumber:phonenumber,
-  })
-  
-  rec.save().then(response => {
-    console.log('phonenumber  saved!')
-    mongoose.connection.close()
+ Record.findById(Number(id))
+  .then(pn =>{console.log(pn)
+    mongoose.connection.close()})
+  .catch(error =>{console.log(error)
   })
