@@ -6,7 +6,20 @@ if(process.argv.length<4){
 }
 const password = process.argv[2]
 const id = process.argv[3]
-
+const name = process.argv[4]
+const phonenumber = process.argv[5]
+const findall = (phoneSchema)=>{
+  const Record = mongoose.model('record', phoneSchema)
+  Record.find({'id':id})
+   .then(pn =>{console.log(pn)
+     mongoose.connection.close()
+     process.exit(0)
+   })
+   .catch(error =>{console.log(error)
+    mongoose.connection.close()
+    process.exit(0)
+ })
+}
 
 const url =`mongodb+srv://jacobinmt47:${password}@cluster0-cekgn.mongodb.net/test?retryWrites=true&w=majority`
 console.log(url)
@@ -16,13 +29,5 @@ const phoneSchema = new mongoose.Schema({
     name:String,
     phonenumber:String,
   })
-  
-  const Record = mongoose.model('record', phoneSchema)
- Record.find({id:1})
-  .then(pn =>{console.log(pn)
-    mongoose.connection.close()
-    process.exit(0)
-  })
-  .catch(error =>{console.log(error)
-  process.exit(0)
-})
+ findall(phoneSchema) 
+ 
