@@ -39,6 +39,7 @@ const findAll = (ret) =>{
     const Record = mongoose.model('record',phoneSchema)
     Record.find({})
     .then(x =>{ret(x)})
+    .catch(error =>{console.log(error)})
 }
 
 const addPerson = (id,name,phonenumber) =>{
