@@ -38,8 +38,9 @@ const findAll = (ret) =>{
     const phoneSchema = connect()
     const Record = mongoose.model('record',phoneSchema)
     Record.find({})
-    .then(x =>{ret(x)})
-    .catch(error =>{console.log(error)})
+    .then(x =>{ret(x)
+      mongoose.connection.close()})
+    .catch(error =>{logAndCloseError(error)})
 }
 
 const addPerson = (id,name,phonenumber) =>{
@@ -50,13 +51,15 @@ const addPerson = (id,name,phonenumber) =>{
         name:name,
         phonenumber:phonenumber
     })
-    rec.save().then(x =>{console.log(x)})
+    rec.save().then(x =>{printNameNumber(x)})
+    .catch(error =>{logAndCloseError(error)})
 }
 
 const deleteId = (id) =>{
     const phoneSchema = connect()
     const Record = mongoose.model('record',phoneSchema)
-    Record.deleteOne({'id':id}).then(x =>console.log(x))
+    Record.deleteOne({'id':id}).then(x =>{printNameNumber(x)})
+    .catch(error =>{logAndCloseError(error)})
 }
 
 module.exports = {findAll,findId,addPerson,deleteId}
