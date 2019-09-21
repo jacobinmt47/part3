@@ -3,6 +3,7 @@ require('dotenv').config()
 const password = process.env.DBPASS
 
 const url =`mongodb+srv://jacobinmt47:${password}@cluster0-cekgn.mongodb.net/test?retryWrites=true&w=majority`
+let pschema = null
 
 const printNameNumber = (x) =>{
     console.log(x.name,'  ',x.phonenumber)
@@ -15,13 +16,21 @@ const printNameNumber = (x) =>{
   }
 
 const connect =() =>{
-    console.log(url)
+    //console.log(url)
+    let phoneSchema = null
     mongoose.connect(url,{useUnifiedTopology:true,useNewUrlParser:true})
-    const phoneSchema = new mongoose.Schema({
+    if(pschema ===null){
+     phoneSchema = new mongoose.Schema({
         id:Number,
         name:String,
         phonenumber:String,
       })
+      pschema = phoneSchema
+    }
+    else{
+      phoneSchema = pschema
+    }
+
       return phoneSchema
 }
 
