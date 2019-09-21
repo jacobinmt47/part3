@@ -29,8 +29,8 @@ const findId = (id,ret) =>{
   const phoneSchema = connect()
   const Record = mongoose.model('record',phoneSchema)
   Record.find({'id':id})
-  .then(pn =>{ pn.forEach(x =>{printNameNumber(x)
-        ret(x) })})
+  .then(pn =>{ret(pn)
+  mongoose.connection.close()})
   .catch(error =>{logAndCloseError(error)})
 }
 
