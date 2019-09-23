@@ -70,5 +70,10 @@ const deleteId = (id) =>{
     Record.deleteOne({'id':id}).then(x =>{printNameNumber(x)})
     .catch(error =>{logAndCloseError(error)})
 }
-
-module.exports = {findAll,findId,addPerson,deleteId}
+const update =(id,name,phonenumber) =>{
+  const cb=() =>{console.log('called from update')}
+  const phoneSchema = connect()
+  const Record = mongoose.model('record',phoneSchema)
+  Record.findOneAndUpdate({'id':id},{'name':name,'phonenumber':phonenumber},cb)
+}
+module.exports = {findAll,findId,addPerson,deleteId,update}
