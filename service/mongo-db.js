@@ -71,7 +71,7 @@ const deleteId = (id) =>{
     .catch(error =>{logAndCloseError(error)})
 }
 const update =(id,name,phonenumber) =>{
-  const cb=() =>{console.log('called from update')}
+  const cb=() =>{console.log('called from update')} //callback to make findOneAndUpdate Happy
   const phoneSchema = connect()
   const Record = mongoose.model('record',phoneSchema)
   Record.findOneAndUpdate({'id':id},{'name':name,'phonenumber':phonenumber},cb)
