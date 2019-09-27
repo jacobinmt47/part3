@@ -26,7 +26,6 @@ if(process.argv.length === 3){
         mongoose.connection.close()})
     .catch(error =>{console.log(error)
         mongoose.connection.close()})
-
 }
 
 if(process.argv.length === 5){
