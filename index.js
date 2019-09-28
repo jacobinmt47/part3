@@ -3,7 +3,11 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
+const mongoose = require('mongoose')
+require('dotenv').config()
 let body ={}  //kept in global scope for logging purposes
+const password = process.env.DBPASS
+const url =`mongodb+srv://jacobinmt47:${password}@cluster0-cekgn.mongodb.net/test?retryWrites=true&w=majority`
 app.use(express.static('build'))
 app.use(bodyParser.json())
 app.use(cors())
@@ -12,53 +16,53 @@ morgan.token('mytoken',(req,res)=>{
   return JSON.stringify(body)
 })
 
-let persons =
-     [
-    {
-      "name": "Arto Hellas",
-      "phonenumber": "040-123456",
-      "id": 0
-    },
-    {
-      "name": "Ada Lovelace",
-      "phonenumber": "39-44-5323523",
-      "id": 1
-    },
-    {
-      "name": "Dan Abramov",
-      "phonenumber": "12-43-234345",
-      "id": 2
-    },
-    {
-      "name": "Mary Poppendieck",
-      "phonenumber": "39-23-6423122",
-      "id": 3
-    }
-  ]
+mongoose.connect(url,{useUnifiedTopology:true,useNewUrlParser:true})
+let phoneSchema = mongoose.Schema(
+{
+  id:Number,
+  name:String,
+  phonenumber:String
+})
+phoneSchema.set('toJSON',{
+  transform(document,returnedObject){
+    returnedObject.id =returnedObject._id.toString()
+    delete returnedObject.__v
+    delete returnedObject._id
+  }
+})
+const Record = mongoose.model('record',phoneSchema)
 
 app.get('/api/persons',(request,response) =>{
     console.log("called from api/persons")
-    response.json(persons)
+
+    Record.find({})
+    .then(pn =>{response.json(pn)})
+    .catch(error =>{console.log(error)
+      response.status(400).send({error:'error'})})
 }
 )
 app.get('/api/persons/:id',(request,response) =>{
     console.log("called from api/persons/:id")
     const id = request.params.id
-    const p = persons.filter(n => n.id === Number(id))
-    if(!p){
-      console.log("person undefined")
-      response.status(404).end()
+    Record.findById(id)
+    .then(r =>{response.json(r)})    
+    .catch(error =>{console.log(error)
+      response.status(400).send({error:'error'})})
     }
-    response.json(p)
-}
 )
 
 app.get('/info',(request,response) =>{
-    const l = persons.length
-    const d = new Date()
-    const msg =`<h3>Phone book has info for ${l} people </br>${d}`
-    console.log(msg)
-    response.send(msg)
+    Record.find({})
+    .then(persons =>{
+      const l = persons.length
+      const d = new Date()
+      const msg =`<h3>Phone book has info for ${l} people </br>${d}`
+      console.log(msg)
+      response.send(msg)
+    })
+    .catch(error =>{console.log(error)
+     response.status(400).send({error:'error'})})
+  
 })
 
 //app.get('/',(request,response)=>{
@@ -66,10 +70,12 @@ app.get('/info',(request,response) =>{
 //})
 
 app.delete('/api/persons/:id',(request,response) =>{
-  const id = Number(request.params.id)
-  console.log("delete person with id = "+id)
-  persons = persons.filter(n =>n.id !== id)
-  response.status(204).end()
+  const id = request.params.id
+  console.log('called from delete id:',id.toString())
+  Record.findByIdAndRemove(id)
+  .then(r =>{response.status(204).end()})
+  .catch(error =>{console.log(error)
+     response.status(400).send({error:'error'})})
 })
 
 app.post('/api/persons/',(request,response) =>{
@@ -82,19 +88,16 @@ app.post('/api/persons/',(request,response) =>{
     console.log("phonenumber is missing from query")
     return response.status(400).json({error:'phonenumber is missing'})
   }
-  const notp = persons.find(x =>x.name ===body.name)
-  if(notp){
-    console.log('name alreay exists '+body.name)
-    return response.status(400).json({error:'name alreay exists '+body.name})
-  }
-  const person ={
+  const record = mongoose.model('record',phoneSchema)
+  const ps = new record({
+    id:100,
     name:body.name,
-    phonenumber:body.phonenumber,
-    id:Math.round( Math.random()*1000000)
-  } 
-  console.log(person)
-  persons = persons.concat(person)
-  response.json(person)
+    phonenumber:body.phonenumber
+  })
+  ps.save().then(sp =>{response.json(sp.toJSON())})
+  .catch(error =>{console.log('error',error.toString())
+  response.status(204).end})
+
 })
 
 const PORT = process.env.PORT || 3001
