@@ -90,7 +90,7 @@ app.post('/api/persons/',(request,response) =>{
   }
   const record = mongoose.model('record',phoneSchema)
   const ps = new record({
-    id:100,
+    id:Math.floor(Math.random()*4000000000),  //will be overwrote
     name:body.name,
     phonenumber:body.phonenumber
   })
