@@ -4,10 +4,8 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
 const mongoose = require('mongoose')
-require('dotenv').config()
+const phoneSchema = require('./service/mg-connect')
 let body ={}  //kept in global scope for logging purposes
-const password = process.env.DBPASS
-const url =`mongodb+srv://jacobinmt47:${password}@cluster0-cekgn.mongodb.net/test?retryWrites=true&w=majority`
 app.use(express.static('build'))
 app.use(bodyParser.json())
 app.use(cors())
@@ -16,20 +14,7 @@ morgan.token('mytoken',(req,res)=>{
   return JSON.stringify(body)
 })
 
-mongoose.connect(url,{useUnifiedTopology:true,useNewUrlParser:true})
-let phoneSchema = mongoose.Schema(
-{
-  id:Number,
-  name:String,
-  phonenumber:String
-})
-phoneSchema.set('toJSON',{
-  transform(document,returnedObject){
-    returnedObject.id =returnedObject._id.toString()
-    delete returnedObject.__v
-    delete returnedObject._id
-  }
-})
+
 const Record = mongoose.model('record',phoneSchema)
 
 app.get('/api/persons',(request,response) =>{
@@ -88,8 +73,8 @@ app.post('/api/persons/',(request,response) =>{
     console.log("phonenumber is missing from query")
     return response.status(400).json({error:'phonenumber is missing'})
   }
-  const record = mongoose.model('record',phoneSchema)
-  const ps = new record({
+  //const record = mongoose.model('record',phoneSchema)
+  const ps = new Record({
     id:Math.floor(Math.random()*4000000000),  //will be overwrote
     name:body.name,
     phonenumber:body.phonenumber
