@@ -4,7 +4,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
 const mongoose = require('mongoose')
-const phoneSchema = require('./service/mg-connect')
+const phoneS = require('./service/mg-connect')
 let body ={}  //kept in global scope for logging purposes
 app.use(express.static('build'))
 app.use(bodyParser.json())
@@ -15,7 +15,8 @@ morgan.token('mytoken',(req,res)=>{
 })
 
 
-const Record = mongoose.model('record',phoneSchema)
+const Record = mongoose.model('record',phoneS.phoneSchema)
+console.log(Record)
 
 app.get('/api/persons',(request,response) =>{
     console.log("called from api/persons")
@@ -73,12 +74,13 @@ app.post('/api/persons/',(request,response) =>{
     console.log("phonenumber is missing from query")
     return response.status(400).json({error:'phonenumber is missing'})
   }
-  //const record = mongoose.model('record',phoneSchema)
+ // const record = mongoose.model('record',phoneSchema)
   const ps = new Record({
-    id:Math.floor(Math.random()*4000000000),  //will be overwrote
+    id:Math.floor(Math.random()*4000000000),  
     name:body.name,
     phonenumber:body.phonenumber
   })
+  console.log(ps,' called from post line 83')
   ps.save().then(sp =>{response.json(sp.toJSON())})
   .catch(error =>{console.log('error',error.toString())
   response.status(204).end})

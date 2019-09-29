@@ -3,6 +3,7 @@ require('dotenv').config()
 
 const password = process.env.DBPASS
 const url =`mongodb+srv://jacobinmt47:${password}@cluster0-cekgn.mongodb.net/test?retryWrites=true&w=majority`
+mongoose.set('useFindAndModify', false)
 mongoose.connect(url,{useUnifiedTopology:true,useNewUrlParser:true})
 let phoneSchema = mongoose.Schema(
 {
