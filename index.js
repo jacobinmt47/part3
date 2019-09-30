@@ -14,6 +14,16 @@ morgan.token('mytoken',(req,res)=>{
   return JSON.stringify(body)
 })
 
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError' && error.kind === 'ObjectId') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } 
+
+  next(error)
+}
+app.use(errorHandler)
 
 const Record = mongoose.model('record',phoneS.phoneSchema)
 console.log(Record)
@@ -27,17 +37,16 @@ app.get('/api/persons',(request,response) =>{
       response.status(400).send({error:'error'})})
 }
 )
-app.get('/api/persons/:id',(request,response) =>{
+app.get('/api/persons/:id',(request,response,next) =>{
     console.log("called from api/persons/:id")
     const id = request.params.id
     Record.findById(id)
     .then(r =>{response.json(r)})    
-    .catch(error =>{console.log(error)
-      response.status(400).send({error:'error'})})
+    .catch(error =>{next(error)})
     }
 )
 
-app.get('/info',(request,response) =>{
+app.get('/info',(request,response,next) =>{
     Record.find({})
     .then(persons =>{
       const l = persons.length
@@ -46,8 +55,7 @@ app.get('/info',(request,response) =>{
       console.log(msg)
       response.send(msg)
     })
-    .catch(error =>{console.log(error)
-     response.status(400).send({error:'error'})})
+    .catch(error =>{next(error)})
   
 })
 
@@ -55,16 +63,15 @@ app.get('/info',(request,response) =>{
 //    response.send('<h1>hello world </h1>')
 //})
 
-app.delete('/api/persons/:id',(request,response) =>{
+app.delete('/api/persons/:id',(request,response,next) =>{
   const id = request.params.id
   console.log('called from delete id:',id.toString())
   Record.findByIdAndRemove(id)
   .then(r =>{response.status(204).end()})
-  .catch(error =>{console.log(error)
-     response.status(400).send({error:'error'})})
+  .catch(error =>{next(error)})
 })
 
-app.post('/api/persons/',(request,response) =>{
+app.post('/api/persons/',(request,response,next) =>{
    body = request.body
    if(!body.name){
     console.log("name is missing from query")
@@ -82,9 +89,20 @@ app.post('/api/persons/',(request,response) =>{
   })
   console.log(ps,' called from post line 83')
   ps.save().then(sp =>{response.json(sp.toJSON())})
-  .catch(error =>{console.log('error',error.toString())
-  response.status(204).end})
+  .catch(error =>{next(error)})
+})
 
+app.put('/api/persons/:id',(request,response,next) =>{
+body = request.body
+const id = request.params.id
+console.log(body.phonenumber)
+const phone ={
+  name:body.name,
+  phonenumber:body.phonenumber
+}
+Record.findByIdAndUpdate(id,phone,{new:true})
+.then(p =>{response.json(p.toJSON())})
+.catch(error =>{next(error)})
 })
 
 const PORT = process.env.PORT || 3001
