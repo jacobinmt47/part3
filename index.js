@@ -87,22 +87,26 @@ app.post('/api/persons/',(request,response,next) =>{
     name:body.name,
     phonenumber:body.phonenumber
   })
-  console.log(ps,' called from post line 83')
+  console.log(ps,' called from post line 90')
   ps.save().then(sp =>{response.json(sp.toJSON())})
   .catch(error =>{next(error)})
 })
 
 app.put('/api/persons/:id',(request,response,next) =>{
-body = request.body
+const body = request.body
+const name = body.name
+const phonenumber = body.phonenumber
 const id = request.params.id
-console.log(body.phonenumber)
 const phone ={
-  name:body.name,
-  phonenumber:body.phonenumber
+  id:id,
+  name:name,
+  phonenumber:phonenumber
 }
+console.log(phone)
 Record.findByIdAndUpdate(id,phone,{new:true})
 .then(p =>{response.json(p.toJSON())})
 .catch(error =>{next(error)})
+
 })
 
 const PORT = process.env.PORT || 3001

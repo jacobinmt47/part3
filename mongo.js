@@ -22,7 +22,7 @@ if(process.argv.length === 3){
     //get all items
     const Record = connect()
     Record.find({})
-    .then(x =>{x.forEach(y =>{console.log(y.name,'  ',y.phonenumber)})
+    .then(x =>{x.forEach(y =>{console.log(y.name,'  ',y.phonenumber+'  '+y._id)})
         mongoose.connection.close()})
     .catch(error =>{console.log(error)
         mongoose.connection.close()})

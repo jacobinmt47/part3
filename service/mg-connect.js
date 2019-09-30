@@ -7,7 +7,7 @@ mongoose.set('useFindAndModify', false)
 mongoose.connect(url,{useUnifiedTopology:true,useNewUrlParser:true})
 let phoneSchema = mongoose.Schema(
 {
-  id:Number,
+  id:String,
   name:String,
   phonenumber:String
 })
