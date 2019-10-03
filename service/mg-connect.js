@@ -1,5 +1,8 @@
 const mongoose = require('mongoose')
-require('dotenv').config()
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+require('mongoose-unique-validator')
 
 const password = process.env.DBPASS
 const url =`mongodb+srv://jacobinmt47:${password}@cluster0-cekgn.mongodb.net/test?retryWrites=true&w=majority`
