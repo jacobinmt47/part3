@@ -11,8 +11,8 @@ mongoose.connect(url,{useUnifiedTopology:true,useNewUrlParser:true})
 let phoneSchema = mongoose.Schema(
 {
   id:{type:String,require:true},
-  name:{type:String,require:true,unique:true},
-  phonenumber:{type:String,require:true,unique:true}
+  name:{type:String,require:true,unique:true,minlength:3},
+  phonenumber:{type:String,require:true,minlength:8}
 })
 phoneSchema.set('toJSON',{
   transform(document,returnedObject){
