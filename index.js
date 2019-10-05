@@ -6,12 +6,12 @@ const mongoose = require('mongoose')
 const phoneS = require('./service/mg-connect')
 
 const app = express()
-let body = {} // kept in global scope for logging purposes
+let body = {} //kept in global scope for logging purposes
 app.use(express.static('build'))
 app.use(bodyParser.json())
 app.use(cors())
 app.use(morgan(':method :url :status :res[content-length] :response-time ms :mytoken'))
-morgan.token('mytoken', (req, res) => JSON.stringify(body))
+morgan.token('mytoken', (req,res)=>{ return JSON.stringify(body)})
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
@@ -24,58 +24,57 @@ const errorHandler = (error, request, response, next) => {
 }
 app.use(errorHandler)
 
-const Record = mongoose.model('record', phoneS.phoneSchema)
+const Record = mongoose.model('record',phoneS.phoneSchema)
 console.log(Record)
 
 app.get('/api/persons', (request, response) => {
   console.log('called from api/persons')
   Record.find({})
-    .then((pn) => { response.json(pn) })
-    .catch((error) => {
-      console.log(error)
+    .then(pn => { response.json(pn) })
+    .catch(error => {console.log(error)
       response.status(400).send({ error: 'error' })
     })
 })
 app.get('/api/persons/:id', (request, response, next) => {
   console.log('called from api/persons/:id')
-  const { id } = request.params
+  const id = request.params.id
   Record.findById(id)
-    .then((r) => { response.json(r) })
-    .catch((error) => { next(error) })
+    .then(r => { response.json(r) })
+    .catch(error => { next(error) })
 })
 
 app.get('/info', (request, response, next) => {
   Record.find({})
-    .then((persons) => {
+    .then(persons => {
       const l = persons.length
       const d = new Date()
       const msg = `<h3>Phone book has info for ${l} people </br>${d}`
       console.log(msg)
       response.send(msg)
     })
-    .catch((error) => { next(error) })
+    .catch(error => { next(error) })
+  
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
-  const { id } = request.params
+  const id = request.params.id
   console.log('called from delete id:', id.toString())
   Record.findByIdAndRemove(id)
-    .then((r) => {
-      response.status(204).end()
-      console.log(r, ' was deleted')
+    .then(r =>{response.status(204).end()
+      console.log(r,' was deleted')
     })
-    .catch((error) => { next(error) })
+    .catch(error => { next(error) })
 })
 
 app.post('/api/persons/', (request, response, next) => {
   body = request.body
   if (!body.name) {
     console.log('name is missing from query')
-    return response.status(400).json({ error: 'name is missing ' })
+    return response.status(400).json({ error: 'name is missing '})
   }
   if (!body.phonenumber) {
     console.log('phonenumber is missing from query')
-    return response.status(400).json({ error: 'phonenumber is missing' })
+    return response.status(400).json({ error: 'phonenumber is missing'})
   }
   // const record = mongoose.model('record',phoneSchema)
   const ps = new Record({
@@ -83,25 +82,26 @@ app.post('/api/persons/', (request, response, next) => {
     name: body.name,
     phonenumber: body.phonenumber,
   })
-  console.log(ps, ' called from post line 85')
-  ps.save().then((sp) => { response.json(sp.toJSON()) })
-    .catch((error) => { next(error) })
+  console.log(ps, ' called from post line 84')
+  ps.save().then(sp => { response.json(sp.toJSON()) })
+    .catch(error => { next(error) })
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-  const { body } = request
-  const { name } = body
-  const { phonenumber } = body
-  const { id } = request.params
+  const bdy = request.body
+  const name = bdy.name
+  const phonenumber = bdy.phonenumber
+  const id = request.params.id
   const phone = {
-    id,
-    name,
-    phonenumber,
+    id: id,
+    name: name,
+    phonenumber: phonenumber,
   }
   console.log(phone)
-  Record.findByIdAndUpdate(id, phone, { new: true })
-    .then((p) => { response.json(p.toJSON()) })
-    .catch((error) => { next(error) })
+  Record.findByIdAndUpdate(id,phone,{new: true })
+    .then(p =>{response.json(p.toJSON()) })
+    .catch(error => { next(error) })
+
 })
 
 const PORT = process.env.PORT || 3001
