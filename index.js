@@ -84,7 +84,7 @@ app.post('/api/persons/',(request,response,next) =>{
     name:body.name,
     phonenumber:body.phonenumber
   })
-  console.log(ps,' called from post line 90')
+  console.log(ps,' called from post line 87')
   ps.save().then(sp =>{response.json(sp.toJSON())})
   .catch(error =>{next(error)})
 })
