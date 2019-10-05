@@ -5,6 +5,7 @@ if (process.env.NODE_ENV !== 'production') {
 const uniqueValadator = require('mongoose-unique-validator')
 
 const password = process.env.DBPASS
+console.log(password)
 const url =`mongodb+srv://jacobinmt47:${password}@cluster0-cekgn.mongodb.net/test?retryWrites=true&w=majority`
 mongoose.set('useFindAndModify', false)
 mongoose.connect(url,{useUnifiedTopology:true,useNewUrlParser:true})
