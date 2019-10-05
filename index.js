@@ -59,15 +59,12 @@ app.get('/info',(request,response,next) =>{
   
 })
 
-//app.get('/',(request,response)=>{
-//    response.send('<h1>hello world </h1>')
-//})
-
 app.delete('/api/persons/:id',(request,response,next) =>{
   const id = request.params.id
   console.log('called from delete id:',id.toString())
   Record.findByIdAndRemove(id)
-  .then(r =>{response.status(204).end()})
+  .then(r =>{response.status(204).end()
+  console.log(r,' was deleted')})
   .catch(error =>{next(error)})
 })
 
