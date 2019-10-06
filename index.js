@@ -6,12 +6,12 @@ const mongoose = require('mongoose')
 const phoneS = require('./service/mg-connect')
 
 const app = express()
-let body = {} //kept in global scope for logging purposes
+let body = {} // kept in global scope for logging purposes
 app.use(express.static('build'))
 app.use(bodyParser.json())
 app.use(cors())
 app.use(morgan(':method :url :status :res[content-length] :response-time ms :mytoken'))
-morgan.token('mytoken', (req,res)=>{ return JSON.stringify(body)})
+morgan.token('mytoken', (req, res) => JSON.stringify(body))
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
@@ -24,7 +24,7 @@ const errorHandler = (error, request, response, next) => {
 }
 app.use(errorHandler)
 
-const Record = mongoose.model('record',phoneS.phoneSchema)
+const Record = mongoose.model('record', phoneS.phoneSchema)
 console.log(Record)
 
 app.get('/api/persons', (request, response) => {
@@ -38,7 +38,7 @@ app.get('/api/persons', (request, response) => {
 })
 app.get('/api/persons/:id', (request, response, next) => {
   console.log('called from api/persons/:id')
-  const id = request.params.id
+  const { id } = request.params
   Record.findById(id)
     .then(r => { response.json(r) })
     .catch(error => { next(error) })
@@ -54,14 +54,14 @@ app.get('/info', (request, response, next) => {
       response.send(msg)
     })
     .catch(error => { next(error) })
-  
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
-  const id = request.params.id
+  const { id } = request.params
   console.log('called from delete id:', id.toString())
   Record.findByIdAndRemove(id)
-    .then(r => { response.status(204).end()
+    .then(r => {
+      response.status(204).end()
       console.log(r, ' was deleted')
     })
     .catch(error => { next(error) })
@@ -71,11 +71,11 @@ app.post('/api/persons/', (request, response, next) => {
   body = request.body
   if (!body.name) {
     console.log('name is missing from query')
-    return response.status(400).json({ error: 'name is missing '})
+    return response.status(400).json({ error: 'name is missing ' })
   }
   if (!body.phonenumber) {
     console.log('phonenumber is missing from query')
-    return response.status(400).json({ error: 'phonenumber is missing'})
+    return response.status(400).json({ error: 'phonenumber is missing' })
   }
   // const record = mongoose.model('record',phoneSchema)
   const ps = new Record({
@@ -90,16 +90,16 @@ app.post('/api/persons/', (request, response, next) => {
 
 app.put('/api/persons/:id', (request, response, next) => {
   const bdy = request.body
-  const name = bdy.name
-  const phonenumber = bdy.phonenumber
-  const id = request.params.id
+  const { name } = bdy
+  const { phonenumber } = bdy
+  const { id } = request.params
   const phone = {
-    id: id,
-    name: name,
-    phonenumber: phonenumber,
+    id,
+    name,
+    phonenumber,
   }
   console.log(phone)
-  Record.findByIdAndUpdate(id, phone, {new: true })
+  Record.findByIdAndUpdate(id, phone, { new: true })
     .then(p => { response.json(p.toJSON()) })
     .catch(error => { next(error) })
 })

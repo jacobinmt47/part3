@@ -43,11 +43,11 @@ if (process.argv.length === 5) {
   })
   rec.save()
     .then((x) => {
-      console.log(x),
+      console.log(x)
       mongoose.connection.close()
     })
     .catch((error) => {
-      console.log(error),
+      console.log(error)
       mongoose.connection.close()
     })
 }
