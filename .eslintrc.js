@@ -25,6 +25,7 @@ module.exports = {
   ],
   'no-console':0,
   'linebreak-style':0,
-  'semi':0
+  'semi':0,
+  'arrow-parens':0
   }
 };

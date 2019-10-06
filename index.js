@@ -31,7 +31,8 @@ app.get('/api/persons', (request, response) => {
   console.log('called from api/persons')
   Record.find({})
     .then(pn => { response.json(pn) })
-    .catch(error => {console.log(error)
+    .catch(error => {
+      console.log(error)
       response.status(400).send({ error: 'error' })
     })
 })
@@ -60,8 +61,8 @@ app.delete('/api/persons/:id', (request, response, next) => {
   const id = request.params.id
   console.log('called from delete id:', id.toString())
   Record.findByIdAndRemove(id)
-    .then(r =>{response.status(204).end()
-      console.log(r,' was deleted')
+    .then(r => { response.status(204).end()
+      console.log(r, ' was deleted')
     })
     .catch(error => { next(error) })
 })
@@ -98,10 +99,9 @@ app.put('/api/persons/:id', (request, response, next) => {
     phonenumber: phonenumber,
   }
   console.log(phone)
-  Record.findByIdAndUpdate(id,phone,{new: true })
-    .then(p =>{response.json(p.toJSON()) })
+  Record.findByIdAndUpdate(id, phone, {new: true })
+    .then(p => { response.json(p.toJSON()) })
     .catch(error => { next(error) })
-
 })
 
 const PORT = process.env.PORT || 3001
